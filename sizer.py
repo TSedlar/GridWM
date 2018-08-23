@@ -23,9 +23,8 @@ def active_screen(app):
 def active_screen_region(app):
     return active_screen(app).availableGeometry()
 
+
 # moves the given window on the given monitor with the window id to the bounds
-
-
 def change_window_region(active_region, wid, bounds):
     top = active_region.topLeft()
     tx = int(top.x() + bounds.x() + (MARGIN / 2.0))
@@ -74,6 +73,7 @@ def size_and_hide(window, grid, active_region, wid, region):
             snapped.setWidth(abs((rect.x() + rect.width()) - snapped.x()))
             snapped.setHeight(abs((rect.y() + rect.height()) - snapped.y()))
     do_grid(grid, grid_callback)
+
     # created translated point to the monitor
     translated = QtCore.QRect(-1, -1, -1, -1)
     translated.setX((float(snapped.x()) / grid.width())
@@ -84,8 +84,10 @@ def size_and_hide(window, grid, active_region, wid, region):
                         * float(active_region.width()))
     translated.setHeight(
         (float(snapped.height()) / grid.height()) * float(active_region.height()))
+
     # move the window
     change_window_region(active_region, wid, translated)
+
     # hide the program window
     window.hide()
 
@@ -205,8 +207,10 @@ def create_grid_gui(app):
             painter.drawRect(rect)
             if rect.intersects(drag):
                 painter.fillRect(rect, REGION_COLOR)
+
         # draw the grid
         do_grid(grid, grid_callback)
+
         # draw axis
         painter.setPen(QtGui.QPen(AXIS_COLOR))
         painter.drawLine(grid.width() / 2, 0, grid.width() / 2, grid.height())
