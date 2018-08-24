@@ -1,7 +1,10 @@
 from PySide2 import QtWidgets, QtGui, QtCore
+from pathlib import Path
 import window_data as WinData
 import time
 import types
+import argparse
+import os
 
 
 BLOCKS = 20
@@ -89,7 +92,7 @@ def size_and_hide(window, grid, active_region, wid, region):
     change_window_region(active_region, wid, translated)
 
     # hide the program window
-    window.hide()
+    window.close()
 
 
 # snaps the window to the top left side of the screen at 50% width and 50% height
@@ -149,6 +152,16 @@ def create_button(txt, bg, fg):
     return btn
 
 
+# exports the current window layout configuration to a json file
+def export_config(app, window):
+    window.hide()
+    text = QtWidgets.QInputDialog.getText(window, 'Config Saver', 'Enter layout name:')[0]
+    if len(text) > 0:
+        cfg_dir = '%s/.gridwm/' % (str(Path.home()))
+        Path(cfg_dir).mkdir(parents=True, exist_ok=True)
+        WinData.write_current_config(app, '%s/%s.json' % (cfg_dir, text))
+    window.close()
+
 # creates the GUI used to change window regions
 def create_grid_gui(app):
     active_region = active_screen_region(app)
@@ -162,7 +175,7 @@ def create_grid_gui(app):
                           QtCore.Qt.X11BypassWindowManagerHint)
 
     # set window properties
-    window.setFixedSize(290, 290)
+    window.setFixedSize(290, 320)
     window.setStyleSheet('background-color: rgb(%s, %s, %s)' %
                          (FRAME_COLOR.red(), FRAME_COLOR.green(), FRAME_COLOR.blue()))
     window.setWindowOpacity(0.95)
@@ -269,6 +282,11 @@ def create_grid_gui(app):
     bot_right.setFixedHeight(25)
     layout.addWidget(bot_right, 2, 2)
 
+    # add export button
+    export = create_button('EXPORT', GRID_BG_COLOR, LEGEND_COLOR)
+    export.setFixedHeight(25)
+    layout.addWidget(export, 3, 0, 1, 3)
+
     # grab focus upon showing
     def override_show_event(evt):
         window.raise_()
@@ -277,10 +295,10 @@ def create_grid_gui(app):
     window.showEvent = override_show_event
 
     # exit the program upon hiding
-    def override_hide_event(evt):
-        window.close()
+    def override_close_event(evt):
+        window.hide()
         app.exit()  # close the program since it is a one-run type of program
-    window.hideEvent = override_hide_event
+    window.closeEvent = override_close_event
 
     # add mouse press events
     up_left.clicked.connect(lambda: snap_nw(
@@ -299,11 +317,12 @@ def create_grid_gui(app):
         window, grid, active_region, active_win, drag))
     bot_right.clicked.connect(lambda: snap_se(
         window, grid, active_region, active_win, drag))
+    export.clicked.connect(lambda: export_config(app, window))
 
     # add key press events
     def override_key_press_event(evt):
         if evt.key() == QtCore.Qt.Key_Escape:
-            window.hide()
+            window.close()
         elif evt.key() == QtCore.Qt.Key_Q:
             snap_nw(window, grid, active_region, active_win, drag)
         elif evt.key() == QtCore.Qt.Key_E:
@@ -336,9 +355,17 @@ def create_grid_gui(app):
 
 # main program logic
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--config')
+    args = ap.parse_args()
+    
     app = QtWidgets.QApplication([])
-    create_grid_gui(app)
-    app.exec_()
+
+    if args.config:
+        WinData.apply_config(app, args.config)
+    else:
+        create_grid_gui(app)
+        app.exec_()
 
 
 if __name__ == '__main__':
