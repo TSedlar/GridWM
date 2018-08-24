@@ -31,7 +31,7 @@ Map the `gridwm` command to a key combination to run it on the currently active 
 ## Profiles
 Clicking the export button will result in the ability to create a JSON configuration.
 
-These are saved under ~/.gridwm/<given_name>.json
+These are saved under `~/.gridwm/<given_name>.json`
 
 It will set the dimensions of every program listed in the configuration that is opened.
 
