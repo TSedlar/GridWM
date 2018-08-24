@@ -47,10 +47,7 @@ def change_window_region(active_region, wid, bounds):
         ty += neg
     if distFromBot < MARGIN:
         ty -= neg
-    # size down the window first for correct moving/sizing
-    WinData.size_window(wid, 100, 100)
-    WinData.move_window(wid, tx, ty)
-    WinData.size_window(wid, tw, th)
+    WinData.set_window_bounds(wid, int(tx), int(ty), tw, th)
 
 
 # creates a grid with a callback system on the given widget

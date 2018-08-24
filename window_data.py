@@ -23,16 +23,6 @@ def active_window_id():
     return int(_exec_to_str('xdotool getactivewindow'))
 
 
-# moves the window with the given id to the given coordinates
-def move_window(wid, x, y):
-    return _exec_to_str('xdotool windowmove %s %s %s' % (wid, x, y))
-
-
-# resizes the window with the given id to the given dimensions
-def size_window(wid, w, h):
-    return _exec_to_str('xdotool windowsize %s %s %s' % (wid, w, h))
-
-
 # sets the window with the given id to the given bounds
 def set_window_bounds(wid, x, y, w, h):
     return _exec_to_str('wmctrl -i -r %s -e 0,%s,%s,%s,%s' % (wid, x, y, w, h))
@@ -159,14 +149,11 @@ def find_win(win_list, wclass):
 
 
 # sets the window to the bounds of the given config
-def set_win_cfg_bounds(region, win_cfg, win):
+def _set_win_cfg_bounds(region, win_cfg, win):
     top = region.topLeft()
     x = (int(win_cfg['x']) + top.x())
     y = (int(win_cfg['y']) + top.y())
-    # size down the window first for correct moving/sizing
-    size_window(win.wid, 100, 100)
-    move_window(win.wid, x, y)
-    size_window(win.wid, win_cfg['w'], win_cfg['h'])
+    set_window_bounds(win.wid, x, y, win_cfg['w'], win_cfg['h'])
 
 
 # applies the configuration of the given file
@@ -191,6 +178,6 @@ def apply_config(app, path):
                     visited.append(wc)
                     if count_wclass(win_list, wc) == 1:
                         match = find_win(win_list, wc)
-                        set_win_cfg_bounds(region, window, match)
+                        _set_win_cfg_bounds(region, window, match)
                     else:
                         multiples.append(wc)
