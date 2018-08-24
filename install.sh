@@ -12,5 +12,5 @@ source deactivate
 
 EOT
 
-chmod a+rx $DIR/gridwm
+chmod u+x $DIR/gridwm
 sudo mv $DIR/gridwm /usr/local/bin/gridwm

@@ -25,7 +25,7 @@ Windows is not currently supported but will be soon.
 
 ## Standard running
 
-Map the `gridwm` command to a key combination to run it on the currently active window.
+Map the `gridwm` command to a key combination to run it on the currently active window. (Suggested to use `xbindkeys` and `xbindkeys-config`)
 
 
 ## Profiles
@@ -35,7 +35,7 @@ These are saved under `~/.gridwm/<given_name>.json`
 
 It will set the dimensions of every program listed in the configuration that is opened.
 
-It's suggested to map the below command to a key combination to automatically set your layout upon the keys being pressed.
+It's suggested to map the below command to a key combination to automatically set your layout upon the keys being pressed. (Suggested to use `xbindkeys` and `xbindkeys-config`)
 
 ```
 gridwm --config=~/.gridwm/<given_name>.json
