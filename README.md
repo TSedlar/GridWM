@@ -7,6 +7,10 @@ This program aims to make it easy to have a clean workspace with easy to make us
 
 ![](md_res/showcase.gif)
 
+## Prerequisites
+
+You must install [Conda for Python 3.6](https://conda.io/miniconda.html)
+
 
 ## Installation
 
